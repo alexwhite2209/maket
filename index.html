@@ -43,6 +43,12 @@
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;overflow-x:hidden;overflow-x:clip}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden;overflow-x:clip}
 img,svg{display:block;max-width:100%}
+/* фон всей страницы: домик с первого слайда, затемнённый, стоит на месте, контент едет поверх.
+   высота по большому вьюпорту, чтобы на телефоне фон не прыгал, когда прячется адресная строка */
+.site-bg{position:fixed;top:0;left:0;width:100%;height:100vh;height:100lvh;z-index:0;pointer-events:none;background:var(--bg)}
+.site-bg img{width:100%;height:100%;object-fit:cover;object-position:50% 62%}
+.site-bg::after{content:"";position:absolute;inset:0;background:radial-gradient(120% 90% at 50% 40%,rgba(9,11,9,.74) 0%,rgba(9,11,9,.88) 100%)}
+main,footer{position:relative;z-index:1}
 a{color:inherit}
 h1,h2,h3,h4{font-family:var(--display);font-weight:400;margin:0;text-wrap:balance}
 p,figure,ul{margin:0}
@@ -293,9 +299,6 @@ section[id],#prices,#contacts{scroll-margin-top:var(--hdr)}
 
 /* ═══════════ Бронирование ═══════════ */
 .book{overflow:hidden}
-.book-bg{position:absolute;inset:0;z-index:0}
-.book-bg img{width:100%;height:100%;object-fit:cover;opacity:.55}
-.book-bg::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,var(--bg) 0%,rgba(15,19,15,.55) 30%,rgba(15,19,15,.7) 70%,var(--bg) 100%)}
 .book-grid{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,520px);gap:clamp(28px,5vw,84px);align-items:start}
 .perks{list-style:none;padding:0;display:grid;gap:10px;margin:24px 0 30px}
 .perks li{display:flex;gap:12px;align-items:center;font-weight:500}
@@ -421,6 +424,7 @@ footer a:hover{color:var(--ink)}
 </head>
 <body>
 <a class="skip" href="#main">К содержанию</a>
+<div class="site-bg" aria-hidden="true"><img src="assets/photos/hero.jpg" alt=""></div>
 
 <!-- ═══════════ Шапка ═══════════ -->
 <header class="top" id="top">
@@ -599,7 +603,6 @@ footer a:hover{color:var(--ink)}
 
   <!-- ═══════════ 05 · Бронирование ═══════════ -->
   <section class="sec book" id="booking" aria-labelledby="bk-h">
-    <div class="book-bg" aria-hidden="true"><img src="assets/photos/booking-bg.jpg" alt="" loading="lazy"></div>
     <div class="wrap book-grid">
       <div data-rv="up">
         <p class="eyebrow"><b>05</b>Бронирование</p>
