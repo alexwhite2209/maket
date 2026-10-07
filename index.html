@@ -31,6 +31,7 @@
   --sand:#E9D3B2; --sand-hi:#F4E4CC; --sand-ink:#2A2016;
   --paper:#FAF7F1; --paper-2:#F0EBE2; --pink:#1E1B16; --pmute:#6E665C; --pline:rgba(30,27,22,.14);
   --moss:#34452F; --moss-hi:#41573A; --tbd:#E3B24E;
+  --frame:1px solid var(--sand);          /* рамка модулей и плашек, цвет кнопки «Забронировать» */
   --display:"Prata",Georgia,"Times New Roman",serif;
   --body:"Manrope","Segoe UI",system-ui,sans-serif;
   --script:"Great Vibes","Marck Script",cursive;
@@ -46,7 +47,7 @@ img,svg{display:block;max-width:100%}
 /* фон всей страницы: домик с первого слайда, затемнённый, стоит на месте, контент едет поверх.
    высота по большому вьюпорту, чтобы на телефоне фон не прыгал, когда прячется адресная строка */
 .site-bg{position:fixed;top:0;left:0;width:100%;height:100vh;height:100lvh;z-index:0;pointer-events:none;background:var(--bg)}
-.site-bg img{width:100%;height:100%;object-fit:cover;object-position:50% 62%}
+.site-bg img{width:100%;height:100%;object-fit:cover;object-position:50% 62%;filter:brightness(.3)}
 .site-bg::after{content:"";position:absolute;inset:0;background:radial-gradient(120% 90% at 50% 40%,rgba(9,11,9,.74) 0%,rgba(9,11,9,.88) 100%)}
 main,footer{position:relative;z-index:1}
 a{color:inherit}
@@ -146,7 +147,7 @@ section[id],#prices,#contacts{scroll-margin-top:var(--hdr)}
 .script .ln{margin-left:auto}
 
 /* белая колонка с карточками выезжает справа */
-.side{position:absolute;z-index:3;right:var(--gut);top:calc(var(--hdr) + 6px);bottom:var(--bar-h);width:clamp(270px,21vw,320px);background:var(--paper);color:var(--pink);border-radius:18px;padding:12px;display:flex;flex-direction:column;gap:10px;box-shadow:0 30px 70px -30px rgba(0,0,0,.7)}
+.side{position:absolute;z-index:3;right:var(--gut);top:calc(var(--hdr) + 6px);bottom:var(--bar-h);width:clamp(270px,21vw,320px);border:var(--frame);background:var(--paper);color:var(--pink);border-radius:18px;padding:12px;display:flex;flex-direction:column;gap:10px;box-shadow:0 30px 70px -30px rgba(0,0,0,.7)}
 .slide.on .side,.slide.enter .side{animation:sideIn 1.15s var(--wipe) .2s both}
 .slide.leave .side{animation:sideOut .9s var(--wipe) both}
 @keyframes sideIn{from{transform:translateX(calc(100% + var(--gut) + 20px))}}
@@ -161,7 +162,7 @@ section[id],#prices,#contacts{scroll-margin-top:var(--hdr)}
 
 /* строка бронирования и переключатель слайдов */
 .hero-ui{position:absolute;z-index:5;left:var(--gut);right:var(--gut);bottom:28px;display:flex;align-items:flex-end;justify-content:space-between;gap:24px;animation:rise 1s var(--ease) .8s both}
-.bar{flex:0 1 900px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr)) auto;align-items:stretch;background:rgba(13,17,13,.66);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--line-2);border-radius:18px;overflow:hidden}
+.bar{flex:0 1 900px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr)) auto;align-items:stretch;background:rgba(13,17,13,.66);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:var(--frame);border-radius:18px;overflow:hidden}
 .f{display:grid;align-content:center;gap:3px;padding:12px 20px;border-right:1px solid var(--line);min-width:0;cursor:pointer}
 .f[role="group"]{cursor:default}
 .f>span{font-size:10.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--fog)}
@@ -227,9 +228,9 @@ section[id],#prices,#contacts{scroll-margin-top:var(--hdr)}
 
 /* что забронировать: фильтр и карточки */
 .chips{display:flex;flex-wrap:wrap;gap:6px}
-.chips button{appearance:none;border:1px solid var(--line-2);background:none;border-radius:999px;padding:9px 17px;font-size:13.5px;font-weight:600;color:var(--mute);cursor:pointer;transition:background-color .3s,color .3s,border-color .3s}
-.chips button:hover{color:var(--ink);border-color:var(--ink)}
-.chips button[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.chips button{appearance:none;border:var(--frame);background:none;border-radius:999px;padding:9px 17px;font-size:13.5px;font-weight:600;color:var(--mute);cursor:pointer;transition:background-color .3s,color .3s,border-color .3s}
+.chips button:hover{color:var(--ink);background:rgba(233,211,178,.1)}
+.chips button[aria-pressed="true"]{background:var(--sand);color:var(--sand-ink)}
 .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
 @media (max-width:1000px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 /* телефон: лента со свайпом вместо длинного столбика, карточки въезжают по мере листания */
@@ -241,7 +242,7 @@ section[id],#prices,#contacts{scroll-margin-top:var(--hdr)}
   .grid .offer .go{font-size:0;gap:0;padding:9px}
   .grid .offer .go svg{width:15px;height:15px}
 }
-.offer{position:relative;display:block;aspect-ratio:4/3.05;border-radius:16px;overflow:hidden;text-decoration:none;background:var(--bg-3);isolation:isolate}
+.offer{position:relative;display:block;aspect-ratio:4/3.05;border:var(--frame);border-radius:16px;overflow:hidden;text-decoration:none;background:var(--bg-3);isolation:isolate}
 .offer[hidden]{display:none}
 .offer img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .offer::after{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(0deg,rgba(8,10,8,.88) 0%,rgba(8,10,8,.3) 42%,rgba(8,10,8,0) 68%)}
@@ -250,7 +251,7 @@ section[id],#prices,#contacts{scroll-margin-top:var(--hdr)}
 .offer .cap{position:absolute;z-index:2;left:16px;right:16px;bottom:18px;text-align:center}
 .offer .cap b{display:block;font-family:var(--display);font-weight:400;font-size:clamp(22px,1.9vw,28px);line-height:1.1}
 .offer .cap small{display:block;color:var(--mute);font-size:13.5px;margin-top:6px}
-.offer .price{position:absolute;z-index:2;left:14px;top:14px;background:rgba(13,17,13,.62);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid var(--line-2);border-radius:999px;padding:6px 13px;font-size:12.5px;font-weight:700}
+.offer .price{position:absolute;z-index:2;left:14px;top:14px;background:rgba(13,17,13,.62);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:var(--frame);border-radius:999px;padding:6px 13px;font-size:12.5px;font-weight:700}
 .offer .go{position:absolute;z-index:2;right:14px;top:14px;display:inline-flex;align-items:center;gap:6px;background:var(--sand);color:var(--sand-ink);border-radius:999px;padding:6px 13px;font-size:12.5px;font-weight:700;opacity:0;transform:translateY(-6px);transition:opacity .35s,transform .35s var(--ease)}
 .offer .go svg{width:13px;height:13px}
 .offer:hover .go,.offer:focus-visible .go{opacity:1;transform:none}
@@ -258,26 +259,26 @@ section[id],#prices,#contacts{scroll-margin-top:var(--hdr)}
 
 /* внутри домика: большое фото и светлая колонка, как второй слайд */
 .split{display:grid;grid-template-columns:minmax(0,1fr) clamp(300px,27vw,380px);gap:16px}
-.big-ph{position:relative;min-height:clamp(400px,36vw,540px);border-radius:18px;overflow:hidden;background:var(--bg-3)}
+.big-ph{position:relative;min-height:clamp(400px,36vw,540px);border:var(--frame);border-radius:18px;overflow:hidden;background:var(--bg-3)}
 .big-ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .big-ph::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(9,11,9,.82) 0%,rgba(9,11,9,.4) 40%,rgba(9,11,9,0) 70%),linear-gradient(0deg,rgba(9,11,9,.6),rgba(9,11,9,0) 45%)}
 .big-ph .ov{position:absolute;z-index:2;left:clamp(22px,3.2vw,48px);right:22px;bottom:clamp(22px,3.2vw,48px);max-width:min(560px,80%);text-shadow:0 2px 16px rgba(0,0,0,.4)}
 .big-ph .ov p:last-child{max-width:42ch}
 .big-ph .ov p:last-child{color:rgba(243,238,230,.88);margin-top:14px}
-.paper{background:var(--paper);color:var(--pink);border-radius:18px;padding:clamp(18px,2vw,26px);display:flex;flex-direction:column;gap:18px}
+.paper{background:var(--paper);color:var(--pink);border:var(--frame);border-radius:18px;padding:clamp(18px,2vw,26px);display:flex;flex-direction:column;gap:18px}
 .paper h3{font-size:24px;line-height:1.15}
 .feat{list-style:none;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:12px 14px;font-size:14px;font-weight:500}
 .feat li{display:flex;gap:9px;align-items:center}
 .feat svg{flex:none;width:20px;height:20px;color:var(--moss)}
 .mini{flex:1;min-height:150px;display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.mini figure{position:relative;border-radius:12px;overflow:hidden;background:var(--paper-2)}
+.mini figure{position:relative;border:var(--frame);border-radius:12px;overflow:hidden;background:var(--paper-2)}
 .mini img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.mini figcaption{position:absolute;left:8px;bottom:8px;z-index:2;background:rgba(250,247,241,.92);border-radius:999px;padding:3px 10px;font-size:12px;font-weight:700}
+.mini figcaption{position:absolute;left:8px;bottom:8px;z-index:2;background:rgba(250,247,241,.92);border:var(--frame);border-radius:999px;padding:3px 10px;font-size:12px;font-weight:700}
 .paper .btn{flex:none}
 @media (max-width:900px){.split{grid-template-columns:1fr}.big-ph{min-height:420px}}
 
 /* территория */
-.terr{position:relative;border-radius:22px;overflow:hidden;min-height:clamp(420px,36vw,540px);display:grid;grid-template-columns:minmax(0,1fr) clamp(190px,19vw,250px);gap:20px;padding:clamp(22px,3.2vw,48px);background:var(--bg-3)}
+.terr{position:relative;border:var(--frame);border-radius:22px;overflow:hidden;min-height:clamp(420px,36vw,540px);display:grid;grid-template-columns:minmax(0,1fr) clamp(190px,19vw,250px);gap:20px;padding:clamp(22px,3.2vw,48px);background:var(--bg-3)}
 .terr>.bgph{position:absolute;inset:0;z-index:0}
 .terr>.bgph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 60%}
 .terr>.bgph::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(9,11,9,.86) 0%,rgba(9,11,9,.5) 38%,rgba(9,11,9,0) 66%),linear-gradient(0deg,rgba(9,11,9,.5),rgba(9,11,9,0) 40%)}
@@ -285,9 +286,9 @@ section[id],#prices,#contacts{scroll-margin-top:var(--hdr)}
 .terr-txt .sub{color:rgba(243,238,230,.88)}
 .terr-txt .btn{margin-top:24px}
 .thumbs{position:relative;z-index:1;display:grid;gap:12px;align-content:center}
-.thumbs figure{position:relative;border-radius:12px;overflow:hidden;aspect-ratio:16/10;border:2px solid rgba(250,247,241,.9);background:var(--bg-3)}
+.thumbs figure{position:relative;border-radius:12px;overflow:hidden;aspect-ratio:16/10;border:var(--frame);background:var(--bg-3)}
 .thumbs img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.thumbs figcaption{position:absolute;z-index:2;left:8px;bottom:8px;background:rgba(13,17,13,.7);border-radius:999px;padding:3px 10px;font-size:12px;font-weight:600}
+.thumbs figcaption{position:absolute;z-index:2;left:8px;bottom:8px;background:rgba(13,17,13,.7);border:var(--frame);border-radius:999px;padding:3px 10px;font-size:12px;font-weight:600}
 @media (max-width:760px){
   .terr{grid-template-columns:1fr;min-height:0;padding:0;gap:0;background:var(--bg-2)}
   .terr>.bgph{position:relative;aspect-ratio:4/3}
@@ -302,7 +303,7 @@ section[id],#prices,#contacts{scroll-margin-top:var(--hdr)}
 .book-grid{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,520px);gap:clamp(28px,5vw,84px);align-items:start}
 .perks{list-style:none;padding:0;display:grid;gap:10px;margin:24px 0 30px}
 .perks li{display:flex;gap:12px;align-items:center;font-weight:500}
-.perks i{flex:none;width:26px;height:26px;border-radius:50%;border:1px solid var(--line-2);display:grid;place-items:center}
+.perks i{flex:none;width:26px;height:26px;border-radius:50%;border:var(--frame);display:grid;place-items:center}
 .perks svg{width:13px;height:13px;color:var(--sand)}
 .prices h3{font-size:22px;margin-bottom:8px}
 .plist{border-top:1px solid var(--line)}
@@ -310,7 +311,7 @@ section[id],#prices,#contacts{scroll-margin-top:var(--hdr)}
 .plist span{color:var(--mute)}
 .plist b{font-weight:700;white-space:nowrap;text-align:right}
 .rules{margin-top:14px;color:var(--fog);font-size:13px;line-height:1.55}
-.book-card{background:var(--paper);color:var(--pink);border-radius:22px;padding:clamp(18px,2.2vw,28px);box-shadow:0 34px 90px -36px rgba(0,0,0,.75)}
+.book-card{background:var(--paper);color:var(--pink);border:var(--frame);border-radius:22px;padding:clamp(18px,2.2vw,28px);box-shadow:0 34px 90px -36px rgba(0,0,0,.75)}
 .book-card.flash{animation:flash 1.4s var(--ease)}
 @keyframes flash{25%{box-shadow:0 0 0 5px var(--sand),0 34px 90px -36px rgba(0,0,0,.75)}}
 .book-card h3{font-size:26px;line-height:1.1;margin-bottom:16px}
@@ -360,19 +361,19 @@ footer a:hover{color:var(--ink)}
 @media (max-width:860px){.foot{grid-template-columns:1fr}footer{padding-bottom:110px}}
 
 /* мобильная панель и cookies */
-.dock{position:fixed;left:10px;right:10px;bottom:calc(10px + env(safe-area-inset-bottom));z-index:60;display:none;grid-template-columns:auto auto 1fr;gap:8px;padding:8px;border-radius:20px;background:rgba(15,19,15,.88);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid var(--line-2);transform:translateY(150%);transition:transform .5s var(--ease)}
+.dock{position:fixed;left:10px;right:10px;bottom:calc(10px + env(safe-area-inset-bottom));z-index:60;display:none;grid-template-columns:auto auto 1fr;gap:8px;padding:8px;border-radius:20px;background:rgba(15,19,15,.88);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:var(--frame);transform:translateY(150%);transition:transform .5s var(--ease)}
 .dock.show{transform:none}
 .dock a{display:grid;place-items:center;height:48px;min-width:48px;border-radius:14px;border:1px solid var(--line-2);text-decoration:none}
 .dock a svg{width:20px;height:20px}
 .dock .btn{height:48px;border-radius:14px}
 @media (max-width:760px){.dock{display:grid}}
-.cookie{position:fixed;left:18px;bottom:18px;z-index:70;max-width:400px;background:rgba(22,27,22,.95);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--line-2);border-radius:16px;padding:10px 10px 10px 16px;display:flex;align-items:center;gap:14px;font-size:12.5px;line-height:1.4;color:var(--mute);box-shadow:0 20px 60px rgba(0,0,0,.45)}
+.cookie{position:fixed;left:18px;bottom:18px;z-index:70;max-width:400px;background:rgba(22,27,22,.95);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:var(--frame);border-radius:16px;padding:10px 10px 10px 16px;display:flex;align-items:center;gap:14px;font-size:12.5px;line-height:1.4;color:var(--mute);box-shadow:0 20px 60px rgba(0,0,0,.45)}
 .cookie[hidden]{display:none}
 .cookie .btn{flex:none;padding:9px 16px;font-size:13px}
 @media (max-width:760px){.cookie{left:10px;right:10px;top:calc(var(--hdr) + 6px);bottom:auto;max-width:none}}
 
 /* ═══════════ План территории в окне ═══════════ */
-.dlg{border:1px solid var(--line-2);padding:0;background:var(--bg-2);color:var(--ink);border-radius:22px;width:min(1040px,calc(100vw - 24px));max-height:calc(100vh - 24px);max-height:calc(100svh - 24px);overflow:auto}
+.dlg{border:var(--frame);padding:0;background:var(--bg-2);color:var(--ink);border-radius:22px;width:min(1040px,calc(100vw - 24px));max-height:calc(100vh - 24px);max-height:calc(100svh - 24px);overflow:auto}
 .dlg::backdrop{background:rgba(5,7,5,.72);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
 .dlg[open]{animation:dlgIn .5s var(--ease)}
 @keyframes dlgIn{from{opacity:0;transform:translateY(16px) scale(.98)}}
