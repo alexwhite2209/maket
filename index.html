@@ -117,51 +117,55 @@ html[data-season="winter"] .season i{transform:translateX(100%)}
 .drawer.open{transform:none}
 .drawer a{font-family:var(--display);font-size:26px;text-decoration:none;padding:6px 0}
 
-/* ═══════════ Первый экран: скролл-видео ═══════════ */
-.hero{position:relative;height:860vh;z-index:4}
-@media (max-width:720px){.hero{height:780vh}}
-/* телефон: свайп доводит кадр до ближайшей сцены, ниже героя точек нет и страница листается свободно */
-.snap{position:absolute;left:0;width:1px;height:1px;pointer-events:none;scroll-snap-align:start}
-@media (max-width:720px) and (pointer:coarse){html:not(.static){scroll-snap-type:y proximity}}
-.stage{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden}
+/* ═══════════ Первый экран: один экран, сцены сменяются сами ═══════════ */
+.hero{position:relative;z-index:4}
+.stage{position:relative;height:100vh;height:100svh;min-height:560px;overflow:hidden}
 .stage canvas,.stage video,.poster{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .poster{background:center/cover no-repeat}
-.stage video{opacity:0;transition:opacity .9s var(--ease-soft);will-change:transform}
+.stage video{opacity:0;transition:opacity .9s var(--ease-soft)}
 .stage.video-ready video{opacity:1}
 .scrim{position:absolute;inset:0;pointer-events:none;background:
   radial-gradient(ellipse 120% 90% at 55% 45%,rgba(4,9,11,0) 35%,rgba(4,9,11,.62) 100%),
   linear-gradient(90deg,rgba(4,9,11,.5) 0%,transparent 55%),
   linear-gradient(180deg,rgba(4,9,11,.55) 0%,transparent 20%)}
-.bands{position:absolute;left:var(--pad);right:var(--pad);bottom:clamp(150px,21vh,210px);height:0}
-.band{position:absolute;left:0;bottom:0;width:min(720px,84vw);opacity:0;text-shadow:var(--tshadow);pointer-events:none;--k:0}
-.band.live{pointer-events:auto}
-.band::before{content:"";position:absolute;inset:-18% -14% -22% -10%;z-index:-1;pointer-events:none;opacity:calc(.25 + .75*var(--k));
+/* заголовок, подпись и факты стоят на месте, меняется только картинка под ними */
+.hero-in{position:absolute;left:var(--pad);bottom:clamp(150px,21vh,210px);width:min(760px,84vw);text-shadow:var(--tshadow)}
+.hero-in::before{content:"";position:absolute;inset:-18% -14% -22% -10%;z-index:-1;pointer-events:none;
   background:radial-gradient(ellipse 70% 64% at 38% 55%,rgba(4,9,11,.66) 0%,rgba(4,9,11,.42) 46%,rgba(4,9,11,0) 76%)}
-.band .eyebrow{color:var(--steam);display:inline-flex;gap:12px;align-items:center}
+.hero-in .eyebrow{color:var(--steam);display:inline-flex}
+.hero-in .hl{font-size:clamp(40px,6.3vw,92px);line-height:1.03;margin:16px 0 18px}
+.hero-in .sub{font-size:clamp(16px,1.5vw,19px);max-width:46ch;font-weight:300}
+.facts{display:flex;flex-wrap:wrap;gap:6px 22px;margin-top:16px;font-family:var(--mono);font-size:13.5px}
+.facts span{display:inline-flex;align-items:center;gap:9px;white-space:nowrap}
+.facts span::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--lamp)}
+.hero-in>:not(h1){animation:rise 1s var(--ease) both}
+.hero-in>.sub{animation-delay:.45s}.hero-in>.facts{animation-delay:.6s}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}}
 .chip{background:rgba(8,15,18,.55);border:1px solid rgba(160,180,180,.22);border-radius:10px;padding:5px 11px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);text-shadow:0 1px 3px rgba(4,9,11,.85)}
-.band .hl{font-size:clamp(40px,6.3vw,92px);line-height:1.03;margin:16px 0 18px}
-.band .sub{font-size:clamp(16px,1.5vw,19px);color:var(--steam);max-width:46ch;font-weight:300;opacity:clamp(0,(var(--k) - .45)*2.4,1)}
-.band .price{font-family:var(--mono);white-space:nowrap}
-.band .cta{--kb:clamp(0,(var(--k) - .78)*5,1);margin-top:24px;opacity:var(--kb);transform:translateY(calc((1 - var(--kb))*14px))}
 .vis{display:block}
 /* Слова выплывают из-под линии, как строка из воды. Маска с запасом под хвосты у, р, д, щ */
 .w{display:inline-block;white-space:nowrap;overflow:hidden;vertical-align:top;padding:0 .02em .16em;margin-bottom:-.16em}
 .wi{display:inline-block;will-change:transform}
-/* в первом экране движение привязано к прокрутке: листаешь назад, слова уходят обратно */
-.band .wi{--kc:clamp(0,(var(--k) - var(--th,0))*2.6,1);transform:translateY(calc((1 - var(--kc))*112%)) rotate(calc((1 - var(--kc))*4deg));transform-origin:0 100%}
-/* в разделах: один раз, когда заголовок появляется на экране */
+/* один раз, когда заголовок появляется на экране */
 [data-mask] .wi{transform:translateY(112%) rotate(4deg);transform-origin:0 100%;transition:transform 1.05s var(--ease);transition-delay:var(--d,0s)}
 [data-mask].in .wi{transform:none}
-/* карточки при прокрутке: выезд и параллакс пишет скрипт, здесь только подготовка слоя */
-[data-par]{will-change:transform,opacity}
-.scene-tag{position:absolute;top:92px;left:var(--pad);font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;color:var(--mist);display:flex;gap:10px;align-items:center;border-style:dashed}
+.scene-tag{position:absolute;top:92px;left:var(--pad);font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;color:var(--mist);display:flex;gap:10px;align-items:center;border-style:dashed;padding-left:5px}
 .scene-tag b{color:var(--steam);font-weight:500}
-.rail{position:absolute;right:var(--pad);top:50%;transform:translateY(-50%);display:grid;gap:14px;list-style:none;margin:0;padding:0}
-.rail li{display:grid;grid-template-columns:auto 2px;gap:14px;align-items:center;justify-items:end;font-size:12.5px;color:var(--fog);transition:color .4s var(--ease-soft);text-shadow:var(--tshadow)}
-.rail li.on{color:var(--steam)}
-.rail li i{height:34px;width:2px;background:var(--line-2);position:relative;overflow:hidden;border-radius:2px}
-.rail li i::after{content:"";position:absolute;inset:0;background:var(--steam);transform:scaleY(var(--f,0));transform-origin:top}
-.rail li span{font-family:var(--mono);font-size:10.5px;margin-right:6px}
+/* пауза смены сцен */
+.pp{appearance:none;flex:none;width:28px;height:28px;padding:0;border-radius:50%;border:1px solid var(--line-2);background:rgba(10,19,22,.4);cursor:pointer;display:grid;place-items:center;transition:border-color .3s}
+.pp:hover{border-color:var(--steam)}
+.pp svg{width:10px;height:10px}
+.pp .play,.pp[data-on="0"] .pause{display:none}
+.pp[data-on="0"] .play{display:block}
+@media (pointer:coarse){.pp{width:36px;height:36px}}
+/* шкала сцен справа: по ней можно перейти к любой */
+.rail{position:absolute;right:var(--pad);top:50%;transform:translateY(-50%);display:grid;gap:4px;list-style:none;margin:0;padding:0}
+.rail button{appearance:none;border:0;background:none;padding:5px 0;cursor:pointer;display:grid;grid-template-columns:auto 2px;gap:14px;align-items:center;justify-items:end;font-size:12.5px;color:var(--fog);text-shadow:var(--tshadow);transition:color .4s var(--ease-soft)}
+.rail button:hover,.rail button[aria-current="true"]{color:var(--steam)}
+.rail em{font-style:normal}
+.rail i{height:34px;width:2px;background:var(--line-2);position:relative;overflow:hidden;border-radius:2px}
+.rail i::after{content:"";position:absolute;inset:0;background:var(--steam);transform:scaleY(var(--f,0));transform-origin:top}
+.rail small{font-family:var(--mono);font-size:10.5px;margin-right:4px}
 @media (max-width:900px),(max-height:560px){.rail{display:none}}
 .search{position:absolute;left:var(--pad);right:var(--pad);bottom:28px;max-width:860px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr)) auto;
   background:rgba(10,19,22,.62);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--line-2);border-radius:18px;overflow:hidden}
@@ -170,45 +174,39 @@ html[data-season="winter"] .season i{transform:translateX(100%)}
 .search input,.search select{background:none;border:0;color:var(--steam);font:inherit;font-size:15.5px;padding:0;min-width:0;color-scheme:dark}
 .search select option{background:var(--deep)}
 .search .btn{border-radius:0;padding:0 28px}
-/* телефон: свой вертикальный путь. Поиск по датам уезжает в нижнюю панель, сверху шкала сцен */
+/* телефон: поиск по датам уезжает в нижнюю панель, сверху шкала сцен, сцены листаются свайпом */
 .mrail{display:none;position:absolute;left:var(--pad);right:var(--pad);top:74px;gap:5px}
 .mrail i{flex:1;height:2px;border-radius:2px;background:var(--line-2);position:relative;overflow:hidden}
 .mrail i::after{content:"";position:absolute;inset:0;background:var(--steam);transform:scaleX(var(--f,0));transform-origin:left}
 @media (max-width:720px){
   .search{display:none}
   .mrail{display:flex}
-  .bands{bottom:calc(104px + env(safe-area-inset-bottom))}
-  .band{width:100%}
-  .band .hl{font-size:clamp(36px,10.4vw,48px);margin:12px 0 12px}
-  .band .sub{font-size:15.5px}
-  .scene-tag{top:88px;white-space:nowrap;font-size:10.5px}
+  .hero-in{bottom:calc(104px + env(safe-area-inset-bottom));width:auto;right:var(--pad)}
+  .hero-in .hl{font-size:clamp(36px,10.4vw,48px);margin:12px 0 12px}
+  .hero-in .sub{font-size:15.5px}
+  .facts{font-size:12.5px;gap:4px 16px;margin-top:12px}
+  .scene-tag{top:86px;white-space:nowrap;font-size:10.5px}
   .scene-tag .long{display:none}
-  .band::before{inset:-30% -12% -30% -12%;background:radial-gradient(ellipse 90% 70% at 40% 60%,rgba(4,9,11,.72) 0%,rgba(4,9,11,.46) 50%,rgba(4,9,11,0) 78%)}
+  .hero-in::before{inset:-30% -12% -30% -12%;background:radial-gradient(ellipse 90% 70% at 40% 60%,rgba(4,9,11,.72) 0%,rgba(4,9,11,.46) 50%,rgba(4,9,11,0) 78%)}
   .scrim{background:
     linear-gradient(0deg,rgba(4,9,11,.82) 0%,rgba(4,9,11,.35) 38%,transparent 58%),
     linear-gradient(180deg,rgba(4,9,11,.55) 0%,transparent 18%)}
 }
-.cue{position:absolute;left:50%;bottom:120px;transform:translateX(-50%);font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--mist);display:grid;justify-items:center;gap:8px;transition:opacity .5s var(--ease-soft)}
+.cue{position:absolute;left:50%;bottom:120px;transform:translateX(-50%);font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--mist);display:grid;justify-items:center;gap:8px}
 .cue i{width:1px;height:38px;background:linear-gradient(var(--steam),transparent);animation:cue 2.2s var(--ease) infinite}
 @keyframes cue{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
 @media (max-width:720px),(max-height:560px){.cue{display:none}}
-/* статичный первый экран: без анимации */
-html.static .hero{height:auto}
-html.static .stage{position:relative;height:100vh;height:100svh}
-html.static .band{opacity:0!important}
-html.static .band[data-i="0"]{opacity:1!important;--k:1!important}
-html.static .rail,html.static .cue{display:none}
 
 /* ═══════════ Секции ═══════════ */
-section.blk{padding:clamp(90px,12vw,160px) 0}
+section.blk{padding:clamp(56px,7vw,104px) 0}
 .kicker h2{font-size:clamp(38px,5vw,68px);line-height:1.04;margin-top:14px}
 .lede{color:var(--mist);max-width:46ch;font-weight:300;font-size:18px}
-.head{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.8fr);gap:40px;align-items:end;margin-bottom:clamp(40px,5vw,64px)}
+.head{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.8fr);gap:40px;align-items:end;margin-bottom:clamp(28px,3.5vw,48px)}
 @media (max-width:860px){.head{grid-template-columns:1fr;gap:18px}}
-.rv{transform:translateY(28px);opacity:.001;transition:transform 1.1s var(--ease),opacity 1.1s var(--ease-soft)}
+/* блоки проявляются один раз, без привязки к прокрутке */
+.rv{transform:translateY(22px);opacity:.001;transition:transform .9s var(--ease),opacity .9s var(--ease-soft)}
 .rv.in{transform:none;opacity:1}
-.rv.in:nth-child(2){transition-delay:.09s}.rv.in:nth-child(3){transition-delay:.18s}
-.rv.done{transition-delay:0s!important}
+.rv.in:nth-child(2){transition-delay:.08s}.rv.in:nth-child(3){transition-delay:.16s}
 
 /* заглушки фото */
 .ph{position:relative;overflow:hidden;background:
@@ -299,9 +297,9 @@ section.blk{padding:clamp(90px,12vw,160px) 0}
 .heated #holdGo{display:inline-flex}
 
 /* рыбалка · во всю ширину, текст внутри кадра */
-.fish{position:relative;border-radius:30px;overflow:hidden;border:1px solid var(--line);min-height:640px;display:grid;align-items:end}
-.fish>.ph{position:absolute;inset:-12% 0;border:0}
-.fish>.ph::after{align-self:start;margin-top:120px}
+.fish{position:relative;border-radius:30px;overflow:hidden;border:1px solid var(--line);min-height:560px;display:grid;align-items:end}
+.fish>.ph{position:absolute;inset:0;border:0}
+.fish>.ph::after{align-self:start;margin-top:56px}
 /* телефон: фото отдельным блоком сверху, текст под ним, ничего не наезжает */
 @media (max-width:720px){
   .fish{display:block;min-height:0}
@@ -485,8 +483,7 @@ footer a:hover{color:var(--steam)}
   html{scroll-behavior:auto}
   *,*::before,*::after{animation:none!important;transition:none!important;transition-delay:0s!important}
   .rv{transform:none;opacity:1}
-  .card .tilt,.btn,.wi,[data-par]{transform:none!important}
-  [data-par]{opacity:1!important}
+  .card .tilt,.btn,.wi{transform:none!important}
   .route .rline{stroke-dashoffset:0}
 }
 </style>
@@ -525,57 +522,33 @@ footer a:hover{color:var(--steam)}
 </nav>
 
 <main id="main" tabindex="-1">
-  <!-- ═══════════ Скролл-видео «Один вечер в Теньках» ═══════════ -->
-  <section class="hero" id="hero" aria-label="Один вечер в Теньках">
+  <!-- ═══════════ Первый экран: сцены «Один вечер в Теньках» сменяются сами ═══════════ -->
+  <section class="hero" id="hero" aria-labelledby="hero-h">
     <div class="stage" id="stage">
       <div class="poster" id="poster" aria-hidden="true"></div>
       <canvas id="heroCanvas" aria-hidden="true"></canvas>
-      <video id="heroVideo" muted playsinline preload="none" aria-hidden="true" tabindex="-1"></video>
+      <video id="heroVideo" muted playsinline loop preload="none" aria-hidden="true" tabindex="-1"></video>
       <div class="scrim" aria-hidden="true"></div>
       <div class="mrail" id="mrail" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
-      <p class="scene-tag chip" aria-hidden="true"><b id="sceneNo">01 / 06</b><span id="sceneName">Рассвет над водой</span><span class="long">· место для кадра ролика</span></p>
-
-      <div class="bands">
-        <div class="band" data-i="0">
-          <p class="eyebrow chip">Республика Татарстан · село Теньки</p>
-          <h1 class="hl" data-summer-text="База отдыха «Теньки» на берегу Волги" data-winter-text="Зимние Теньки на берегу Волги">База отдыха «Теньки» на берегу Волги</h1>
-          <p class="sub"><span data-summer="Деревянные домики у воды, русская баня с чаном и рыбалка круглый год." data-winter="Тёплые срубы у реки, баня после рыбалки.">Деревянные домики у воды, русская баня с чаном и рыбалка круглый год.</span> <span class="tbd" title="Уточнить расстояние">60 км</span> от Казани.</p>
-        </div>
-        <div class="band" data-i="1">
-          <p class="eyebrow chip"><span data-summer="Пирс и берег" data-winter="Пирс во льду">Пирс и берег</span></p>
-          <h2 class="hl" data-summer-text="Домики в ста метрах от воды" data-winter-text="Домики в ста метрах от реки">Домики в ста метрах от воды</h2>
-          <p class="sub">Срубы среди елей, свой пирс, тишина. <span class="price">От 10 000 ₽</span> в сутки.</p>
-        </div>
-        <div class="band" data-i="2">
-          <p class="eyebrow chip">Внутри сруба</p>
-          <h2 class="hl" data-summer-text="На четверых, до шести гостей" data-winter-text="На четверых, до шести гостей">На четверых, до шести гостей</h2>
-          <p class="sub">Дерево, тёплый свет, всё для жизни. Заезд с 16:00, выезд до 12:00.</p>
-        </div>
-        <div class="band" data-i="3">
-          <p class="eyebrow chip"><span data-summer="Баня" data-winter="Баня после льда">Баня</span></p>
-          <h2 class="hl" data-summer-text="Русская баня с комнатой отдыха" data-winter-text="Пар после мороза">Русская баня с комнатой отдыха</h2>
-          <p class="sub"><span class="price">10 000 ₽</span> за 2 часа, до 4 гостей. Продление по часу.</p>
-        </div>
-        <div class="band" data-i="4">
-          <p class="eyebrow chip"><span data-summer="Чан среди елей" data-winter="Чан в снегу">Чан среди елей</span></p>
-          <h2 class="hl" data-summer-text="Горячий чан под елями" data-winter-text="Горячий чан в снегу">Горячий чан под елями</h2>
-          <p class="sub">Вместе с баней, <span class="price">6 000 ₽</span> за 2 часа. Продлили баню, продление чана в подарок.</p>
-        </div>
-        <div class="band" data-i="5">
-          <p class="eyebrow chip"><span data-summer="Ночь на пирсе" data-winter="Огни на льду">Ночь на пирсе</span></p>
-          <h2 class="hl" data-summer-text="Останьтесь до рассвета" data-winter-text="Останьтесь до рассвета">Останьтесь до рассвета</h2>
-          <p class="sub">Выберите даты и домик. Бронирование онлайн, без звонков.</p>
-          <a class="btn cta" href="#booking" data-magnet>Выбрать даты</a>
-        </div>
+      <div class="scene-tag chip">
+        <button class="pp" id="heroPause" type="button" data-on="1" aria-label="Остановить смену сцен"><svg class="pause" viewBox="0 0 10 10" fill="currentColor" aria-hidden="true"><rect x="1.5" y="1" width="2.4" height="8" rx=".6"/><rect x="6.1" y="1" width="2.4" height="8" rx=".6"/></svg><svg class="play" viewBox="0 0 10 10" fill="currentColor" aria-hidden="true"><path d="M2.5 1.2v7.6L9 5z"/></svg></button>
+        <b id="sceneNo" aria-hidden="true">01 / 06</b><span id="sceneName" aria-hidden="true">Рассвет над водой</span><span class="long" aria-hidden="true">· место для кадра ролика</span>
       </div>
 
-      <ol class="rail" aria-hidden="true">
-        <li class="on"><div><span>00</span><em data-summer="Рассвет" data-winter="Лёд">Рассвет</em></div><i></i></li>
-        <li><div><span>03</span>Пирс</div><i></i></li>
-        <li><div><span>06</span>Сруб</div><i></i></li>
-        <li><div><span>09</span>Баня</div><i></i></li>
-        <li><div><span>12</span>Чан</div><i></i></li>
-        <li><div><span>15</span>Ночь</div><i></i></li>
+      <div class="hero-in">
+        <p class="eyebrow chip">Республика Татарстан · село Теньки</p>
+        <h1 class="hl" id="hero-h" data-mask data-summer-text="База отдыха «Теньки» на берегу Волги" data-winter-text="Зимние Теньки на берегу Волги">База отдыха «Теньки» на берегу Волги</h1>
+        <p class="sub"><span data-summer="Деревянные домики у воды, русская баня с чаном и рыбалка круглый год." data-winter="Тёплые срубы у реки, баня после рыбалки.">Деревянные домики у воды, русская баня с чаном и рыбалка круглый год.</span> <span class="tbd" title="Уточнить расстояние">60 км</span> от Казани.</p>
+        <p class="facts"><span>домик от 10 000 ₽ в сутки</span><span>до 6 гостей</span><span>бронирование онлайн</span></p>
+      </div>
+
+      <ol class="rail" aria-label="Сцены">
+        <li><button type="button"><em><small>01</small> <span data-summer="Рассвет" data-winter="Лёд">Рассвет</span></em><i></i></button></li>
+        <li><button type="button"><em><small>02</small> Пирс</em><i></i></button></li>
+        <li><button type="button"><em><small>03</small> Сруб</em><i></i></button></li>
+        <li><button type="button"><em><small>04</small> Баня</em><i></i></button></li>
+        <li><button type="button"><em><small>05</small> Чан</em><i></i></button></li>
+        <li><button type="button"><em><small>06</small> Ночь</em><i></i></button></li>
       </ol>
 
       <!-- Поиск по датам. При подключении TravelLine сюда встаёт их форма поиска. -->
@@ -585,7 +558,7 @@ footer a:hover{color:var(--steam)}
         <label><span>Гости</span><select aria-label="Число гостей"><option>2 гостя</option><option>3 гостя</option><option selected>4 гостя</option><option>5 гостей</option><option>6 гостей</option></select></label>
         <button class="btn" type="submit">Найти домик</button>
       </form>
-      <div class="cue" id="cue" aria-hidden="true">ЛИСТАЙТЕ<i></i></div>
+      <div class="cue" aria-hidden="true">ЛИСТАЙТЕ<i></i></div>
     </div>
   </section>
 
@@ -909,13 +882,14 @@ var CONFIG = {
   phoneHref: "+79669933533",
   whatsapp:  "79104677763",          // сверить с хозяевами: на старом сайте WhatsApp ведёт на другой номер
   telegram:  "tenki_fishing_club",
-  /* Ролик «Один вечер в Теньках». Пока null, крутятся нарисованные сцены-заглушки.
-     Когда ролик готов: { url:"assets/hero-scrub.mp4", bytes:12000000, poster:"assets/hero-poster.jpg" }.
+  /* Ролик «Один вечер в Теньках» на первом экране, крутится сам по кругу, без звука.
+     Пока null, сменяются нарисованные сцены-заглушки.
+     Когда ролик готов: { url:"assets/hero-loop.mp4", poster:"assets/hero-poster.jpg" }.
      Телефон получает свой вертикальный ролик. */
   video: { desktop: null, mobile: null },
-  /* Карта тактов: где начинается и кончается подпись каждой сцены (доля прокрутки героя).
-     Когда придёт ролик, пересадить на реальные склейки и прогнать флик-тест. */
-  bands: [[0,.155],[.172,.322],[.339,.489],[.506,.656],[.673,.823],[.84,1]]
+  /* Склейки ролика: где начинается каждая из шести сцен (доля длины ролика).
+     По ним подсвечивается название сцены и работает переход по шкале. */
+  scenes: [0, .17, .34, .51, .67, .84]
 };
 
 var MQ_REDUCE = matchMedia("(prefers-reduced-motion: reduce)");
@@ -1011,121 +985,50 @@ var io = new IntersectionObserver(function(es){ es.forEach(function(e){
 }); }, { threshold: .2, rootMargin: "0px 0px -8% 0px" });
 $$("[data-mask],[data-price],[data-count],#route").forEach(function(el){ io.observe(el); });
 
-/* ═══════════ Карточки при прокрутке: выезд с параллаксом, туда и обратно ═══════════ */
-/* селектор, откуда выезжает, расстояние px, скорость параллакса, задержка между соседями */
-var PAR_RULES = [
-  [".houses .card",    "up",    190,  .05, .12],
-  [".bath-pic",        "left",  170,  .04, 0],
-  [".svc li",          "up",    70,   0,   .07],
-  [".meal",            "up",    120,  .02, .09],
-  [".fish",            "scale", 150,  0,   0],
-  [".fish > .ph",      "none",  0,   -.1,  0, "desk"],
-  [".fish-list > div", "up",    60,   0,   .05],
-  [".map",             "scale", 160,  0,   0],
-  [".booking",         "up",    160,  0,   0],
-  [".tl-room",         "up",    90,   0,   .1],
-  [".tl-side",         "right", 110,  0,   0],
-  [".rev",             "tilt",  140,  .03, .1],
-  [".road .kicker",    "left",  110,  0,   0],
-  [".route",           "right", 220,  0,   0],
-  [".faq details",     "up",    46,   0,   .05],
-  [".final .row",      "up",    60,   0,   0]
-];
-var PAR = [], parRaf = null;
-function collectPar(){
-  PAR = [];
-  PAR_RULES.forEach(function(r){ if (r[5] === "desk" && MQ_PHONE.matches){ $$(r[0]).forEach(function(el){ el.style.transform = ""; }); return; } $$(r[0]).forEach(function(el, i){
-    if (r[1] === "scale") el.style.transformOrigin = "50% 0";
-    PAR.push({ el: el, m: r[1], d: r[2] * (MQ_PHONE.matches ? .6 : 1), sp: r[3], dl: r[4] * i, sign: i % 2 ? 1 : -1, ty: 0, last: "" });
-  }); });
-}
-function parTick(){
-  parRaf = null;
-  if (reduce) return;
-  var vh = innerHeight;
-  PAR.forEach(function(o){
-    var r = o.el.getBoundingClientRect(), top = r.top - o.ty;
-    if (top > vh + 300 || top + r.height < -300) return;
-    var t = clamp((vh - top) / (vh * .62) - o.dl, 0, 1), e = 1 - Math.pow(1 - t, 3);
-    var tx = 0, ty = 0, sc = 1, rot = 0, op = o.m === "none" ? 1 : Math.min(1, e * 1.25);
-    if (o.m === "up" || o.m === "tilt") ty = (1 - e) * o.d;
-    if (o.m === "tilt") rot = (1 - e) * 5 * o.sign;
-    if (o.m === "left") tx = -(1 - e) * o.d;
-    if (o.m === "right") tx = (1 - e) * o.d;
-    if (o.m === "scale"){ sc = .9 + .1 * e; ty = (1 - e) * o.d * .5; }
-    if (o.sp) ty += (top + r.height / 2 - vh / 2) * -o.sp;
-    o.ty = ty;
-    var s = "translate3d(" + tx.toFixed(1) + "px," + ty.toFixed(1) + "px,0)" + (sc !== 1 ? " scale(" + sc.toFixed(3) + ")" : "") + (rot ? " rotate(" + rot.toFixed(2) + "deg)" : "");
-    if (s !== o.last){ o.last = s; o.el.style.transform = s; o.el.style.opacity = op.toFixed(2); }
-  });
-}
-function parKick(){ if (!parRaf) parRaf = requestAnimationFrame(parTick); }
-function parReset(){ PAR.forEach(function(o){ o.el.style.transform = ""; o.el.style.opacity = ""; o.last = ""; o.ty = 0; }); }
-window.__par = function(){ collectPar(); parKick(); };
-addEventListener("scroll", parKick, { passive: true });
-addEventListener("resize", function(){ collectPar(); parKick(); });
+/* ═══════════ Блоки проявляются один раз, когда доходят до экрана ═══════════ */
+var revealIO = new IntersectionObserver(function(es){ es.forEach(function(e){ if (e.isIntersecting){ e.target.classList.add("in"); revealIO.unobserve(e.target); } }); }, { rootMargin: "0px 0px -6% 0px" });
+function reveal(){ if (reduce) return; $$(".houses .card, .bath-pic, .svc li, .meal, .fish, .map, .booking, .rev, .faq details").forEach(function(el){ el.classList.add("rv"); revealIO.observe(el); }); }
 
-/* ═══════════ Скролл-видео ═══════════ */
+/* ═══════════ Первый экран: сцены сменяются сами ═══════════ */
 var stage = $("#stage"), cv = $("#heroCanvas"), ctx = cv.getContext("2d"), vid = $("#heroVideo");
-var bands = $$(".band"), rail = $$(".rail li"), mrail = $$("#mrail i"), tagNo = $("#sceneNo"), tagName = $("#sceneName"), search = $("#search"), cue = $("#cue");
-var W = 0, H = 0, T = 0, target = 0, shown = 0, rafId = null, lastTick = 0, heroOnScreen = true, loadK = reduce ? 1 : 0, loadStart = performance.now();
+var railBtns = $$(".rail button"), railBars = $$(".rail i"), mrail = $$("#mrail i"), tagNo = $("#sceneNo"), tagName = $("#sceneName"), ppBtn = $("#heroPause"), search = $("#search");
+var W = 0, H = 0, T = 0, rafId = null, lastTick = 0, heroOnScreen = true;
 var SCENES = [
   { s: "Рассвет над водой", w: "Рассвет над льдом" }, { s: "Пирс и берег", w: "Пирс во льду" }, { s: "Внутри сруба", w: "Внутри сруба" },
   { s: "Баня", w: "Баня после льда" }, { s: "Чан среди елей", w: "Чан в снегу" }, { s: "Ночь на пирсе", w: "Огни на льду" }
 ];
-
-/* заголовки сцен: слова выплывают из-под линии по очереди, привязано к прокрутке */
-function split(band){
-  var hl = $(".hl", band), text = season === "winter" ? hl.dataset.winterText : hl.dataset.summerText;
-  var words = text.split(" "), n = words.length;
-  hl.innerHTML = '<span class="sr">' + text + '</span><span class="vis" aria-hidden="true">' + words.map(function(w, i){
-    return '<span class="w" style="--th:' + (i / n * .36).toFixed(3) + '"><span class="wi">' + w + "</span></span>";
-  }).join(" ") + "</span>";
-}
-function splitAll(){ bands.forEach(split); bands.forEach(function(b){ b._op = -1; b._k = -1; }); }
+var N = SCENES.length;
+/* сцена держится SLIDE мс, соседние смешиваются за FADE мс; el — сколько текущая уже на экране */
+var SLIDE = 6500, FADE = 1400;
+var cur = 0, prev = -1, el = 0, prevEl = 0, fadeEl = 0, autoplay = !reduce;
 
 /* PORT: вертикальный кадр телефона. Действие поднимается в верхнюю половину, текст живёт в нижней */
 var PORT = false;
 function size(){ var d = Math.min(devicePixelRatio || 1, 1.75); W = stage.clientWidth; H = stage.clientHeight; PORT = H > W*1.15; cv.width = W*d; cv.height = H*d; ctx.setTransform(d,0,0,d,0,0); }
 var pv = function(land, port){ return PORT ? port : land; };
-function heroProgress(){ var r = hero.getBoundingClientRect(), span = hero.offsetHeight - innerHeight; return span > 0 ? clamp(-r.top / span, 0, 1) : 0; }
-/* точки остановки: середина плато каждой подписи и конец героя */
-var snaps = CONFIG.bands.map(function(b, i){ return i === 0 ? 0 : (b[0] + b[1]) / 2; }).concat([1]).map(function(p){ var s = document.createElement("i"); s.className = "snap"; s.dataset.p = p; s.setAttribute("aria-hidden", "true"); hero.appendChild(s); return s; });
-function placeSnaps(){ var span = hero.offsetHeight - innerHeight; snaps.forEach(function(s){ s.style.top = Math.round(+s.dataset.p * span) + "px"; }); }
 
-/* подписи: плато, мягкие края, сборка по --k; в DOM пишем только изменения */
-var lastScene = -1, lastRail = [];
-function updateCaptions(p){
-  var n = CONFIG.bands.length;
-  bands.forEach(function(b, i){
-    var a = CONFIG.bands[i][0], z = CONFIG.bands[i][1], f = Math.min(.02, (z - a)/3);
-    var op = (i === 0 ? 1 : smooth(p, a, a + f)) * (i === n - 1 ? 1 : 1 - smooth(p, z - f, z));
-    var ramp = +b.dataset.ramp || Math.min(.025, (z - a)*.35);
-    var k = clamp((p - a) / ramp, 0, 1); if (i === 0) k = Math.max(k, loadK);
-    op = Math.round(op*100)/100;
-    if (op !== b._op){ b._op = op; b.style.opacity = op; b.classList.toggle("live", op > .5); }
-    if (Math.abs(k - b._k) > .008 || (k === 1 && b._k !== 1) || (k === 0 && b._k !== 0)){ b._k = k; b.style.setProperty("--k", k.toFixed(3)); }
-  });
-  var scene = 0; CONFIG.bands.forEach(function(r, i){ if (p >= r[0] - .008) scene = i; });
-  if (scene !== lastScene){ lastScene = scene; rail.forEach(function(li, k){ li.classList.toggle("on", k === scene); }); tagNo.textContent = "0" + (scene + 1) + " / 06"; tagName.textContent = season === "winter" ? SCENES[scene].w : SCENES[scene].s; }
-  rail.forEach(function(li, k){ var a = CONFIG.bands[k][0], z = CONFIG.bands[k][1], f = Math.round(clamp((p - a)/(z - a), 0, 1)*50)/50; if (lastRail[k] !== f){ lastRail[k] = f; li.lastElementChild.style.setProperty("--f", f); mrail[k].style.setProperty("--f", f); } });
-  var sOp = Math.round((1 - smooth(p, .1, .14))*100)/100; if (search._op !== sOp){ search._op = sOp; search.style.opacity = sOp; search.style.pointerEvents = sOp < .5 ? "none" : ""; }
-  var cOp = p > .02 ? 0 : 1; if (cue._op !== cOp){ cue._op = cOp; cue.style.opacity = cOp; }
-}
-
-/* видео: блоб целиком (обход хостингов без Range) и сикающие только по очереди */
-var seekBusy = false, pendingTime = null, useVideo = false;
-function requestSeek(t){ if (!vid.duration) return; if (seekBusy){ pendingTime = t; return; } seekBusy = true; vid.currentTime = t; }
-vid.addEventListener("seeked", function(){ seekBusy = false; if (pendingTime !== null){ var t = pendingTime; pendingTime = null; requestSeek(t); } });
-vid.addEventListener("error", function(){ seekBusy = false; pendingTime = null; stage.classList.remove("video-ready"); useVideo = false; });
+/* ролик: крутится по кругу, сцену узнаём по склейкам из CONFIG.scenes */
+var useVideo = false, CUTS = CONFIG.scenes;
+function videoAt(){ var p = vid.currentTime / vid.duration, i = 0; CUTS.forEach(function(c, k){ if (p >= c) i = k; }); var z = i < N - 1 ? CUTS[i+1] : 1; return { i: i, f: clamp((p - CUTS[i]) / (z - CUTS[i]), 0, 1) }; }
+function sceneNow(){ return useVideo && vid.duration ? videoAt().i : cur; }
+function syncVideo(){ if (!useVideo) return; if (autoplay && heroOnScreen && !document.hidden){ var pr = vid.play(); if (pr) pr.catch(function(){}); } else vid.pause(); }
+vid.addEventListener("error", function(){ stage.classList.remove("video-ready"); useVideo = false; kick(); });
+vid.addEventListener("seeked", function(){ if (useVideo){ var a = videoAt(); updateUI(a.i, a.f); } });
 function initVideo(){
   var src = (mobile && CONFIG.video.mobile) || CONFIG.video.desktop;
   if (!src || !src.url) return;
-  if (src.poster) $("#poster").style.backgroundImage = "url('" + src.poster + "')";
-  fetch(src.url, { priority: "low" }).then(function(r){ return r.blob(); }).then(function(b){
-    vid.src = URL.createObjectURL(b); vid.load();
-    vid.addEventListener("canplay", function(){ useVideo = true; requestSeek(heroProgress() * vid.duration); stage.classList.add("video-ready"); }, { once: true });
-  }).catch(function(){ useVideo = false; });
+  if (src.poster){ $("#poster").style.backgroundImage = "url('" + src.poster + "')"; vid.poster = src.poster; }
+  vid.addEventListener("loadeddata", function(){ useVideo = true; stage.classList.add("video-ready"); syncVideo(); kick(); }, { once: true });
+  vid.preload = "auto"; vid.src = src.url;
+}
+
+/* название сцены и полоски: в DOM пишем только изменения */
+var shownScene = -1, lastF = [];
+function updateUI(scene, f){
+  if (scene !== shownScene){ shownScene = scene;
+    railBtns.forEach(function(b, k){ b.setAttribute("aria-current", String(k === scene)); });
+    tagNo.textContent = "0" + (scene + 1) + " / 0" + N; tagName.textContent = season === "winter" ? SCENES[scene].w : SCENES[scene].s; }
+  for (var k = 0; k < N; k++){ var v = k < scene ? 1 : k > scene ? 0 : Math.round(f*50)/50; if (lastF[k] !== v){ lastF[k] = v; railBars[k].style.setProperty("--f", v); mrail[k].style.setProperty("--f", v); } }
 }
 
 /* сцены-заглушки: рисуем, пока нет ролика */
@@ -1229,43 +1132,52 @@ var PAINT = [
     glow(W*pv(.18,.24), H*pv(.86,.5), W*pv(.22,.5), "rgba(240,150,70,1)", .5 + .1*Math.sin(T*6));
   }
 ];
-/* сцена i занимает промежуток от начала своей подписи до начала следующей; склейка в зазоре */
-function paint(p){
+/* текущая сцена медленно приближается; при смене новая проявляется поверх старой */
+function draw(idx, al, k){ if (al <= 0) return; ctx.save(); ctx.globalAlpha = al; var s = 1.02 + (reduce ? 0 : k*.07); ctx.translate(W/2, H/2); ctx.scale(s, s); ctx.translate(-W/2, -H/2); PAINT[idx](); ctx.restore(); }
+function paint(){
   ctx.clearRect(0, 0, W, H);
-  var B = CONFIG.bands, i = 0; for (var k = 0; k < B.length; k++) if (p >= B[k][0]) i = k;
-  var a = B[i][0], z = i < 5 ? B[i+1][0] : 1, local = clamp((p - a)/(z - a), 0, 1);
-  var draw = function(idx, al, kk){ if (al <= 0) return; ctx.save(); ctx.globalAlpha = al; var s = 1.02 + kk*.07; ctx.translate(W/2, H/2); ctx.scale(s, s); ctx.translate(-W/2, -H/2); PAINT[idx](); ctx.restore(); };
-  draw(i, 1, local);
-  if (i < 5){ var x = smooth(p, B[i][1] - .012, B[i+1][0] + .004); if (x > 0) draw(i + 1, x, 0); }
+  var x = prev < 0 ? 1 : smooth(fadeEl, 0, FADE);
+  if (x < 1) draw(prev, 1, prevEl / SLIDE);
+  draw(cur, x, el / SLIDE);
+}
+function go(i){
+  i = (i + N) % N;
+  if (useVideo && vid.duration){ vid.currentTime = CUTS[i] * vid.duration; return; }
+  if (i === cur) return;
+  if (reduce){ prev = -1; } else { prev = cur; prevEl = el; fadeEl = 0; }
+  cur = i; el = 0;
+  paint(); updateUI(cur, 0); kick();
 }
 
-/* цикл: плавное догоняние прокрутки, не зависит от частоты экрана, отдыхает вне экрана */
+/* цикл не зависит от частоты экрана и отдыхает, когда первый экран не виден или показ на паузе */
 function tick(now){
-  var dt = Math.min(100, now - (lastTick || now)); lastTick = now;
-  if (loadK < 1) loadK = clamp((now - loadStart) / 1400, 0, 1);
-  shown += (target - shown) * (1 - Math.pow(1 - .16, dt / 16.667));
-  if (Math.abs(target - shown) < .0005) shown = target;
-  T += dt / 1000;
-  if (useVideo) requestSeek(shown * vid.duration); else paint(shown);
-  updateCaptions(shown);
-  var ambient = !useVideo && !reduce;
-  var busy = shown !== target || loadK < 1;
-  rafId = (heroOnScreen && !document.hidden && (busy || ambient)) ? requestAnimationFrame(tick) : null;
+  var dt = Math.min(100, now - (lastTick || now)), busy; lastTick = now;
+  if (useVideo){
+    if (vid.duration){ var a = videoAt(); updateUI(a.i, a.f); }
+    busy = !vid.paused;
+  } else {
+    if (autoplay){ el += dt; if (!reduce) T += dt / 1000; }
+    if (prev >= 0){ fadeEl += dt; prevEl += dt; if (fadeEl >= FADE) prev = -1; }
+    if (el >= SLIDE) go(cur + 1);
+    paint(); updateUI(cur, el / SLIDE);
+    busy = autoplay || prev >= 0;
+  }
+  rafId = (heroOnScreen && !document.hidden && busy) ? requestAnimationFrame(tick) : null;
   if (!rafId) lastTick = 0;
 }
 function kick(){ if (rafId === null && heroOnScreen && !document.hidden) rafId = requestAnimationFrame(tick); }
-function onScroll(){ target = heroProgress(); kick(); }
-new IntersectionObserver(function(es){ heroOnScreen = es[0].isIntersecting; kick(); }).observe(hero);
-document.addEventListener("visibilitychange", kick);
+new IntersectionObserver(function(es){ heroOnScreen = es[0].isIntersecting; syncVideo(); kick(); }).observe(hero);
+document.addEventListener("visibilitychange", function(){ syncVideo(); kick(); });
 
-/* статичный режим: без анимации (и шорт-экран телефона боком) решается вживую */
-var GATES = ["(prefers-reduced-motion: reduce)", "(orientation: landscape) and (pointer: coarse) and (max-height: 560px)"];
-var MQLS = GATES.map(function(q){ return matchMedia(q); });
-var scrubOn = false, videoInit = false;
-function enableScrub(){ if (scrubOn) return; scrubOn = true; root.classList.remove("static"); if (!videoInit){ videoInit = true; initVideo(); } addEventListener("scroll", onScroll, { passive: true }); bands.forEach(function(b){ b._op = -1; b._k = -1; }); onScroll(); }
-function disableScrub(){ if (!scrubOn && root.classList.contains("static")) return; scrubOn = false; root.classList.add("static"); removeEventListener("scroll", onScroll); if (rafId !== null){ cancelAnimationFrame(rafId); rafId = null; } bands.forEach(function(b){ b.style.opacity = ""; }); shown = target = 0; paint(0); }
-function applyHeroMode(){ reduce = MQ_REDUCE.matches; if (MQLS.some(function(m){ return m.matches; })) disableScrub(); else enableScrub(); }
-MQLS.forEach(function(m){ m.addEventListener("change", applyHeroMode); });
+function setAutoplay(on){ autoplay = on; ppBtn.dataset.on = on ? "1" : "0"; ppBtn.setAttribute("aria-label", on ? "Остановить смену сцен" : "Включить смену сцен"); syncVideo(); kick(); }
+ppBtn.addEventListener("click", function(){ setAutoplay(!autoplay); });
+railBtns.forEach(function(b, i){ b.addEventListener("click", function(){ go(i); }); });
+/* телефон: сцены листаются свайпом вбок, вертикальная прокрутка не мешает */
+(function(){ var sx = null, sy = 0;
+  stage.addEventListener("touchstart", function(e){ var t = e.touches[0]; sx = t.clientX; sy = t.clientY; }, { passive: true });
+  stage.addEventListener("touchend", function(e){ if (sx === null) return; var t = e.changedTouches[0], dx = t.clientX - sx, dy = t.clientY - sy; sx = null;
+    if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)*1.5 && !e.target.closest("button,a,input,select")) go(sceneNow() + (dx < 0 ? 1 : -1)); }, { passive: true });
+})();
 
 /* шапка и мобильная панель: только при изменении */
 var lastSolid = null, lastDock = null, MQ_PHONE = matchMedia("(max-width: 720px)");
@@ -1282,7 +1194,7 @@ addEventListener("scroll", chrome, { passive: true }); MQ_PHONE.addEventListener
   $("#dIn").value = iso(d); $("#dOut").value = iso(o); })();
 search.addEventListener("submit", function(e){ e.preventDefault(); $("#booking").scrollIntoView({ behavior: reduce ? "auto" : "smooth" }); });
 
-seasonSubs.push(function(){ splitAll(); lastScene = -1; if (!rafId) { if (root.classList.contains("static")) paint(0); else paint(shown); updateCaptions(shown); } kick(); });
+seasonSubs.push(function(){ shownScene = -1; if (!rafId){ paint(); updateUI(cur, el / SLIDE); } kick(); });
 
 /* ═══════════ Вечер длится всю страницу ═══════════ */
 (function(){
@@ -1409,7 +1321,6 @@ var heat = 0;
       var items = m ? m[k].map(function(s){ return "<li>" + s + "</li>"; }).join("") : '<li class="tbd">[меню дня, перенесём со старого сайта]</li>';
       return '<article class="meal"><div class="t"><h3>' + x[0] + "</h3><b>" + x[1] + "</b><time>" + x[2] + "</time></div><ul>" + items + "</ul></article>";
     }).join("");
-    if (window.__par) window.__par();
   }
   show(today);
 })();
@@ -1422,17 +1333,19 @@ $("#cookieOk").addEventListener("click", function(){ store("tenki-cookie", "1");
 /* ═══════════ Режим «меньше движения» переключили на лету ═══════════ */
 MQ_REDUCE.addEventListener("change", function(e){
   reduce = e.matches;
-  if (e.matches){ $$("[data-mask]").forEach(function(r){ r.classList.add("in"); }); $("#route").classList.add("in"); parReset(); if (window.__finishHeat) window.__finishHeat(); }
-  else parKick();
-  applyHeroMode();
+  if (e.matches){ $$("[data-mask],.rv").forEach(function(r){ r.classList.add("in"); }); $("#route").classList.add("in"); if (window.__finishHeat) window.__finishHeat(); prev = -1; }
+  setAutoplay(!e.matches);
+  paint();
 });
 
 /* старт */
-size(); placeSnaps(); addEventListener("resize", function(){ size(); placeSnaps(); if (!rafId) paint(shown); });
+size(); addEventListener("resize", function(){ size(); if (!rafId) paint(); });
 setSeason(season);
-applyHeroMode();
+setAutoplay(autoplay);
+initVideo();
+paint(); updateUI(0, 0);
 if (reduce){ $$("[data-mask]").forEach(function(r){ r.classList.add("in"); }); }
-collectPar(); parTick();
+reveal();
 kick();
 })();
 </script>
